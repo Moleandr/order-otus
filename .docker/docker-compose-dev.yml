@@ -1,0 +1,23 @@
+services:
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: ${PG__USER}
+      POSTGRES_PASSWORD: ${PG__PASSWORD}
+      POSTGRES_DB: ${PG__DB}
+    ports:
+      - "5432:5432"
+
+  order-service:
+    image: order-service
+    build:
+      dockerfile: .docker/Dockerfile
+      context: ..
+      target: dev
+    command: ["uvicorn", "src.main:app", "--reload", "--host", "0.0.0.0"]
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../src:/app/src
